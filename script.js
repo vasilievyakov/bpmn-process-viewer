@@ -42,13 +42,7 @@ function initializeBpmnModeler() {
         bpmnModeler = new BpmnJS({
             container: canvas,
             width: '100%',
-            height: '100%',
-            additionalModules: [
-                // Включаем все модули для профессиональных диаграмм
-                'bpmn-js-properties-panel',
-                'bpmn-js-properties-panel/lib/provider/camunda',
-                'bpmn-js-properties-panel/lib/provider/bpmn'
-            ]
+            height: '100%'
         });
 
         console.log('✅ BPMN Modeler для генератора успешно инициализирован');
@@ -200,12 +194,14 @@ function analyzeProcessTextAdvanced(text) {
             // Нумерованная строка - задача
             const taskName = trimmed.replace(/^\d+\.\s*/, '');
             const participant = extractParticipantAdvanced(taskName);
+            const taskType = determineTaskType(taskName);
             
             elements.tasks.push({
                 id: `Task_${index + 1}`,
                 name: taskName,
                 participant: participant,
-                type: determineTaskType(taskName)
+                type: taskType,
+                index: index
             });
             
             if (participant) {
@@ -213,24 +209,30 @@ function analyzeProcessTextAdvanced(text) {
             }
         } else if (trimmed.includes('если') || trimmed.includes('Если')) {
             // Условие - решение
+            const condition = extractCondition(trimmed);
             elements.decisions.push({
                 id: `Decision_${index + 1}`,
-                name: trimmed,
-                condition: extractCondition(trimmed),
-                type: 'exclusiveGateway'
+                name: condition,
+                condition: condition,
+                type: 'exclusiveGateway',
+                index: index
             });
         } else if (trimmed.includes('параллельно') || trimmed.includes('одновременно')) {
             // Параллельные процессы
             elements.decisions.push({
                 id: `Parallel_${index + 1}`,
                 name: trimmed,
-                type: 'parallelGateway'
+                type: 'parallelGateway',
+                index: index
             });
         }
     });
     
     // Создаем пулы и дорожки
     elements.pools = createPoolsFromParticipants(Array.from(elements.participants));
+    
+    // Анализируем потоки сообщений
+    elements.messageFlows = createMessageFlows(elements.tasks, elements.pools);
     
     return elements;
 }
@@ -243,13 +245,32 @@ function extractParticipantAdvanced(text) {
         'клиент', 'менеджер', 'разработчик', 'QA', 'тестировщик',
         'архитектор', 'дизайнер', 'аналитик', 'руководитель',
         'сотрудник', 'специалист', 'команда', 'отдел', 'система',
-        'поставщик', 'подрядчик', 'консультант', 'аудитор'
+        'поставщик', 'подрядчик', 'консультант', 'аудитор',
+        'логистика', 'склад', 'отдел продаж', 'бухгалтерия',
+        'юрист', 'маркетолог', 'дизайнер', 'контент-менеджер'
     ];
     
     for (const participant of participants) {
         if (text.toLowerCase().includes(participant)) {
             return participant.charAt(0).toUpperCase() + participant.slice(1);
         }
+    }
+    
+    // Определяем участника по контексту
+    if (text.toLowerCase().includes('выбирает') || text.toLowerCase().includes('добавляет') || text.toLowerCase().includes('оформляет') || text.toLowerCase().includes('получает')) {
+        return 'Клиент';
+    }
+    if (text.toLowerCase().includes('проверяет') || text.toLowerCase().includes('провер') || text.toLowerCase().includes('подтверждается') || text.toLowerCase().includes('отменяется')) {
+        return 'Система';
+    }
+    if (text.toLowerCase().includes('передается') || text.toLowerCase().includes('передач')) {
+        return 'Менеджер';
+    }
+    if (text.toLowerCase().includes('упаковывается') || text.toLowerCase().includes('отправляется') || text.toLowerCase().includes('упаковываются') || text.toLowerCase().includes('отправляются')) {
+        return 'Логистика';
+    }
+    if (text.toLowerCase().includes('наличие') || text.toLowerCase().includes('склад')) {
+        return 'Склад';
     }
     
     return 'Участник';
@@ -261,12 +282,23 @@ function extractParticipantAdvanced(text) {
 function determineTaskType(taskName) {
     const lowerName = taskName.toLowerCase();
     
-    if (lowerName.includes('провер') || lowerName.includes('анализ')) return 'userTask';
-    if (lowerName.includes('отправ') || lowerName.includes('передач')) return 'sendTask';
-    if (lowerName.includes('получ') || lowerName.includes('прием')) return 'receiveTask';
-    if (lowerName.includes('автомат')) return 'serviceTask';
+    if (lowerName.includes('провер') || lowerName.includes('анализ') || lowerName.includes('выбирает') || lowerName.includes('добавляет') || lowerName.includes('оформляет')) return 'userTask';
+    if (lowerName.includes('отправ') || lowerName.includes('передач') || lowerName.includes('передается')) return 'sendTask';
+    if (lowerName.includes('получ') || lowerName.includes('прием') || lowerName.includes('получает')) return 'receiveTask';
+    if (lowerName.includes('автомат') || lowerName.includes('система') || lowerName.includes('подтверждается') || lowerName.includes('отменяется')) return 'serviceTask';
+    if (lowerName.includes('упаковывается') || lowerName.includes('отправляется')) return 'userTask';
     
     return 'userTask';
+}
+
+/**
+ * Извлечение условия из текста
+ */
+function extractCondition(text) {
+    if (text.includes('если') || text.includes('Если')) {
+        return text.replace(/^.*?(если|Если)\s*/i, '').replace(/[.,].*$/, '');
+    }
+    return text;
 }
 
 /**
@@ -292,13 +324,16 @@ function createPoolsFromParticipants(participants) {
     // Создаем пулы для разных групп участников
     const pools = [];
     const businessParticipants = participants.filter(p => 
-        ['клиент', 'менеджер', 'руководитель'].includes(p.toLowerCase())
+        ['клиент', 'менеджер', 'руководитель', 'аналитик'].includes(p.toLowerCase())
     );
     const technicalParticipants = participants.filter(p => 
-        ['разработчик', 'QA', 'архитектор', 'дизайнер'].includes(p.toLowerCase())
+        ['разработчик', 'QA', 'архитектор', 'дизайнер', 'система'].includes(p.toLowerCase())
+    );
+    const operationalParticipants = participants.filter(p => 
+        ['логистика', 'склад', 'отдел продаж', 'бухгалтерия'].includes(p.toLowerCase())
     );
     const otherParticipants = participants.filter(p => 
-        !businessParticipants.includes(p) && !technicalParticipants.includes(p)
+        !businessParticipants.includes(p) && !technicalParticipants.includes(p) && !operationalParticipants.includes(p)
     );
     
     if (businessParticipants.length > 0) {
@@ -317,6 +352,14 @@ function createPoolsFromParticipants(participants) {
         });
     }
     
+    if (operationalParticipants.length > 0) {
+        pools.push({
+            id: 'Pool_Operational',
+            name: 'Операционные процессы',
+            lanes: operationalParticipants.map(p => ({ id: `Lane_${p}`, name: p }))
+        });
+    }
+    
     if (otherParticipants.length > 0) {
         pools.push({
             id: 'Pool_Other',
@@ -326,6 +369,31 @@ function createPoolsFromParticipants(participants) {
     }
     
     return pools;
+}
+
+/**
+ * Создание потоков сообщений
+ */
+function createMessageFlows(tasks, pools) {
+    const flows = [];
+    
+    // Создаем потоки между задачами разных участников
+    for (let i = 0; i < tasks.length - 1; i++) {
+        const currentTask = tasks[i];
+        const nextTask = tasks[i + 1];
+        
+        if (currentTask.participant !== nextTask.participant) {
+            flows.push({
+                id: `MessageFlow_${i + 1}`,
+                sourceRef: currentTask.id,
+                targetRef: nextTask.id,
+                sourceParticipant: currentTask.participant,
+                targetParticipant: nextTask.participant
+            });
+        }
+    }
+    
+    return flows;
 }
 
 /**
@@ -344,14 +412,15 @@ function createProfessionalBPMNXML(elements) {
                   id="Definitions_1" 
                   targetNamespace="http://bpmn.io/schema/bpmn"
                   exporter="AI BPMN Generator Pro"
-                  exporterVersion="1.0.0">
+                  exporterVersion="2.0.0">
   
   <bpmn:collaboration id="${collaborationId}">`;
 
-    // Добавляем пулы
+    // Добавляем пулы с правильными ссылками на процессы
     elements.pools.forEach((pool, poolIndex) => {
+        const processRef = `Process_${poolIndex + 1}`;
         xml += `
-    <bpmn:participant id="${pool.id}" name="${pool.name}" processRef="Process_${poolIndex + 1}">`;
+    <bpmn:participant id="${pool.id}" name="${pool.name}" processRef="${processRef}">`;
         
         // Добавляем дорожки
         if (pool.lanes.length > 0) {
@@ -367,6 +436,12 @@ function createProfessionalBPMNXML(elements) {
         
         xml += `
     </bpmn:participant>`;
+    });
+
+    // Добавляем потоки сообщений
+    elements.messageFlows.forEach(flow => {
+        xml += `
+    <bpmn:messageFlow id="${flow.id}" sourceRef="${flow.sourceRef}" targetRef="${flow.targetRef}" />`;
     });
 
     // Добавляем основной процесс
@@ -435,48 +510,55 @@ function createProfessionalBPMNXML(elements) {
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="${collaborationId}">`;
 
-    // Добавляем пулы в диаграмму
+    // Добавляем пулы в диаграмму с правильными размерами
     elements.pools.forEach((pool, poolIndex) => {
-        const poolY = poolIndex * 200;
+        const poolY = poolIndex * 250;
+        const poolHeight = pool.lanes.length > 0 ? 200 : 150;
+        
         xml += `
       <bpmndi:BPMNShape id="${pool.id}_di" bpmnElement="${pool.id}">
-        <dc:Bounds x="50" y="${poolY + 50}" width="800" height="150" />
+        <dc:Bounds x="50" y="${poolY + 50}" width="900" height="${poolHeight}" />
       </bpmndi:BPMNShape>`;
         
         // Добавляем дорожки
         if (pool.lanes.length > 0) {
+            const laneWidth = Math.floor(900 / pool.lanes.length);
             pool.lanes.forEach((lane, laneIndex) => {
-                const laneX = 50 + laneIndex * 150;
+                const laneX = 50 + laneIndex * laneWidth;
                 xml += `
         <bpmndi:BPMNShape id="${lane.id}_di" bpmnElement="${lane.id}">
-          <dc:Bounds x="${laneX}" y="${poolY + 50}" width="150" height="150" />
+          <dc:Bounds x="${laneX}" y="${poolY + 50}" width="${laneWidth}" height="${poolHeight}" />
         </bpmndi:BPMNShape>`;
             });
         }
     });
 
-    // Добавляем элементы процесса
+    // Добавляем элементы процесса с правильным позиционированием
     xml += `
       
       <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="102" width="36" height="36" />
       </bpmndi:BPMNShape>`;
 
-    // Добавляем задачи в диаграмму
+    // Добавляем задачи в диаграмму с учетом пулов
     elements.tasks.forEach((task, index) => {
         const x = 250 + index * 200;
+        const y = getTaskYPosition(task, elements.pools);
+        
         xml += `
       <bpmndi:BPMNShape id="${task.id}_di" bpmnElement="${task.id}">
-        <dc:Bounds x="${x}" y="80" width="100" height="80" />
+        <dc:Bounds x="${x}" y="${y}" width="100" height="80" />
       </bpmndi:BPMNShape>`;
     });
 
     // Добавляем шлюзы в диаграмму
     elements.decisions.forEach((decision, index) => {
         const x = 250 + (elements.tasks.length + index) * 200;
+        const y = 95;
+        
         xml += `
       <bpmndi:BPMNShape id="${decision.id}_di" bpmnElement="${decision.id}">
-        <dc:Bounds x="${x}" y="95" width="50" height="50" />
+        <dc:Bounds x="${x}" y="${y}" width="50" height="50" />
       </bpmndi:BPMNShape>`;
     });
 
@@ -492,6 +574,23 @@ function createProfessionalBPMNXML(elements) {
 </bpmn:definitions>`;
 
     return xml;
+}
+
+/**
+ * Определение Y-позиции задачи на основе пула
+ */
+function getTaskYPosition(task, pools) {
+    // Находим пул для участника задачи
+    for (let i = 0; i < pools.length; i++) {
+        const pool = pools[i];
+        const lane = pool.lanes.find(l => l.name === task.participant);
+        if (lane) {
+            return 80 + i * 250 + 50; // Позиция внутри пула
+        }
+    }
+    
+    // Если участник не найден в пулах, размещаем по умолчанию
+    return 80;
 }
 
 /**
