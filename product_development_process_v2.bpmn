@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  id="ProductDevelopmentProcess"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+
+  <bpmn:collaboration id="ProductDevelopmentCollaboration">
+    <!-- Участники процесса -->
+    <bpmn:participant id="BusinessSponsorPool" name="Бизнес / Спонсор" processRef="BusinessSponsorProcess" />
+    <bpmn:participant id="ProductManagementPool" name="Управление Продуктом и Аналитика" processRef="ProductManagementProcess" />
+    <bpmn:participant id="ProjectManagementPool" name="Управление Проектом" processRef="ProjectManagementProcess" />
+    <bpmn:participant id="DevelopmentQualityPool" name="Разработка и Качество" processRef="DevelopmentQualityProcess" />
+    <bpmn:participant id="OperationsSupportPool" name="Эксплуатация и Поддержка" processRef="OperationsSupportProcess" />
+
+    <!-- Потоки сообщений между участниками -->
+    <bpmn:messageFlow id="Flow_BusinessIdea" sourceRef="StartEvent_BusinessIdea" targetRef="Task_ConceptDefinition" name="Поступление Бизнес-Идеи" />
+    <bpmn:messageFlow id="Flow_ApprovalRequest" sourceRef="Task_ConceptDefinition" targetRef="Gateway_BusinessCaseApproval" name="Запрос на утверждение" />
+    <bpmn:messageFlow id="Flow_DevToQA" sourceRef="Task_Development" targetRef="Task_SystemTesting" name="Готовность к тестированию" />
+    <bpmn:messageFlow id="Flow_QATodev" sourceRef="Gateway_DefectsFound" targetRef="Task_BugFixes" name="Обнаруженные дефекты" />
+    <bpmn:messageFlow id="Flow_DeploymentSuccess" sourceRef="Task_Infrastructure" targetRef="EndEvent_ProductReleased" name="Успешное развертывание" />
+  </bpmn:collaboration>
+
+  <!-- ПРОЦЕСС 1: БИЗНЕС / СПОНСОР -->
+  <bpmn:process id="BusinessSponsorProcess" isExecutable="false">
+    <!-- Фаза 1: Инициирование -->
+    <bpmn:startEvent id="StartEvent_BusinessIdea" name="Поступление Бизнес-Идеи / Потребности">
+      <bpmn:outgoing>Flow_BusinessToMarketing</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <!-- Фаза 5: Маркетинговая кампания -->
+    <bpmn:task id="Task_MarketingCampaign" name="Информирование Пользователей / Маркетинговая Кампания">
+      <bpmn:incoming>Flow_DeploymentToMarketing</bpmn:incoming>
+      <bpmn:outgoing>Flow_MarketingToEnd</bpmn:outgoing>
+    </bpmn:task>
+
+    <!-- Конечные события -->
+    <bpmn:endEvent id="EndEvent_ProductRejected" name="Отказ от продукта/услуги">
+      <bpmn:incoming>Flow_RejectionToEnd</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <!-- Потоки последовательности -->
+    <bpmn:sequenceFlow id="Flow_BusinessToMarketing" sourceRef="StartEvent_BusinessIdea" targetRef="Task_MarketingCampaign" />
+    <bpmn:sequenceFlow id="Flow_MarketingToEnd" sourceRef="Task_MarketingCampaign" targetRef="EndEvent_ProductReleased" />
+  </bpmn:process>
+
+  <!-- ПРОЦЕСС 2: УПРАВЛЕНИЕ ПРОДУКТОМ И АНАЛИТИКА -->
+  <bpmn:process id="ProductManagementProcess" isExecutable="false">
+    <!-- Фаза 1: Определение концепции -->
+    <bpmn:task id="Task_ConceptDefinition" name="Определение концепции и целей продукта">
+      <bpmn:outgoing>Flow_ConceptToBusinessCase</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_BusinessCaseFormation" name="Формирование Бизнес-Кейса и Предварительная Оценка">
+      <bpmn:incoming>Flow_ConceptToBusinessCase</bpmn:incoming>
+      <bpmn:outgoing>Flow_BusinessCaseToGateway</bpmn:outgoing>
+    </bpmn:task>
+
+    <!-- Шлюз утверждения бизнес-кейса -->
+    <bpmn:exclusiveGateway id="Gateway_BusinessCaseApproval" name="Утвержден ли Бизнес-Кейс?">
+      <bpmn:incoming>Flow_BusinessCaseToGateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_RejectionToEnd</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ApprovalToRequirements</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <!-- Фаза 2: Детальный анализ требований -->
+    <bpmn:task id="Task_RequirementsAnalysis" name="Сбор и Детальный Анализ Требований">
+      <bpmn:incoming>Flow_ApprovalToRequirements</bpmn:incoming>
+      <bpmn:incoming>Flow_LoopBackToRequirements</bpmn:incoming>
+      <bpmn:outgoing>Flow_RequirementsTopriorization</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_RequirementsPrioritization" name="Приоритизация и Утверждение Требований">
+      <bpmn:incoming>Flow_RequirementsTopriorization</bpmn:incoming>
+      <bpmn:outgoing>Flow_PrioritizationToPlanning</bpmn:outgoing>
+    </bpmn:task>
+
+    <!-- Фаза 4: Координация UAT -->
+    <bpmn:task id="Task_UATCoordination" name="Координация Приемочного Тестирования (UAT)">
+      <bpmn:incoming>Flow_QAToUAT</bpmn:incoming>
+      <bpmn:outgoing>Flow_UATToApproval</bpmn:outgoing>
+    </bpmn:task>
+
+    <!-- Шлюз утверждения продукта -->
+    <bpmn:exclusiveGateway id="Gateway_ProductApproval" name="Продукт Утвержден Бизнесом?">
+      <bpmn:incoming>Flow_UATToApproval</bpmn:incoming>
+      <bpmn:outgoing>Flow_LoopBackToRequirements</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ApprovalToRelease</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <!-- Фаза 6: Анализ обратной связи -->
+    <bpmn:task id="Task_FeedbackAnalysis" name="Сбор и Анализ Обратной Связи от Пользователей">
+      <bpmn:incoming>Flow_SupportToFeedback</bpmn:incoming>
+      <bpmn:outgoing>Flow_FeedbackToChanges</bpmn:outgoing>
+    </bpmn:task>
+
+    <!-- Шлюз необходимости изменений -->
+    <bpmn:exclusiveGateway id="Gateway_ChangesRequired" name="Требуются Ли Значительные Изменения?">
+      <bpmn:incoming>Flow_FeedbackToChanges</bpmn:incoming>
+      <bpmn:outgoing>Flow_ChangesToStart</bpmn:outgoing>
+      <bpmn:outgoing>Flow_NoChangesToStable</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <!-- Потоки последовательности -->
+    <bpmn:sequenceFlow id="Flow_ConceptToBusinessCase" sourceRef="Task_ConceptDefinition" targetRef="Task_BusinessCaseFormation" />
+    <bpmn:sequenceFlow id="Flow_BusinessCaseToGateway" sourceRef="Task_BusinessCaseFormation" targetRef="Gateway_BusinessCaseApproval" />
+    <bpmn:sequenceFlow id="Flow_RejectionToEnd" sourceRef="Gateway_BusinessCaseApproval" targetRef="EndEvent_ProductRejected" name="Нет" />
+    <bpmn:sequenceFlow id="Flow_ApprovalToRequirements" sourceRef="Gateway_BusinessCaseApproval" targetRef="Task_RequirementsAnalysis" name="Да" />
+    <bpmn:sequenceFlow id="Flow_RequirementsTopriorization" sourceRef="Task_RequirementsAnalysis" targetRef="Task_RequirementsPrioritization" />
+    <bpmn:sequenceFlow id="Flow_PrioritizationToPlanning" sourceRef="Task_RequirementsPrioritization" targetRef="Task_ProjectPlanning" />
+    <bpmn:sequenceFlow id="Flow_UATToApproval" sourceRef="Task_UATCoordination" targetRef="Gateway_ProductApproval" />
+    <bpmn:sequenceFlow id="Flow_LoopBackToRequirements" sourceRef="Gateway_ProductApproval" targetRef="Task_RequirementsAnalysis" name="Нет" />
+    <bpmn:sequenceFlow id="Flow_ApprovalToRelease" sourceRef="Gateway_ProductApproval" targetRef="Task_ReleaseCoordination" name="Да" />
+    <bpmn:sequenceFlow id="Flow_FeedbackToChanges" sourceRef="Task_FeedbackAnalysis" targetRef="Gateway_ChangesRequired" />
+    <bpmn:sequenceFlow id="Flow_ChangesToStart" sourceRef="Gateway_ChangesRequired" targetRef="StartEvent_BusinessIdea" name="Да" />
+    <bpmn:sequenceFlow id="Flow_NoChangesToStable" sourceRef="Gateway_ChangesRequired" targetRef="EndEvent_StableOperation" name="Нет" />
+  </bpmn:process>
+
+  <!-- ПРОЦЕСС 3: УПРАВЛЕНИЕ ПРОЕКТОМ -->
+  <bpmn:process id="ProjectManagementProcess" isExecutable="false">
+    <!-- Фаза 2: Планирование проекта -->
+    <bpmn:task id="Task_ProjectPlanning" name="Разработка Детального Плана Проекта">
+      <bpmn:incoming>Flow_PrioritizationToPlanning</bpmn:incoming>
+      <bpmn:outgoing>Flow_PlanningToGateway</bpmn:outgoing>
+    </bpmn:task>
+
+    <!-- Параллельный шлюз готовности -->
+    <bpmn:parallelGateway id="Gateway_ReadyForDevelopment" name="Готовность к разработке">
+      <bpmn:incoming>Flow_PlanningToGateway</bpmn:incoming>
+      <bpmn:incoming>Flow_ArchitectureToGateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_GatewayToTechnicalDesign</bpmn:outgoing>
+    </bpmn:parallelGateway>
+
+    <!-- Фаза 5: Планирование выпуска -->
+    <bpmn:task id="Task_ReleaseCoordination" name="Планирование и Координация Выпуска">
+      <bpmn:incoming>Flow_ApprovalToRelease</bpmn:incoming>
+      <bpmn:outgoing>Flow_ReleaseToInfrastructure</bpmn:outgoing>
+    </bpmn:task>
+
+    <!-- Потоки последовательности -->
+    <bpmn:sequenceFlow id="Flow_PlanningToGateway" sourceRef="Task_ProjectPlanning" targetRef="Gateway_ReadyForDevelopment" />
+    <bpmn:sequenceFlow id="Flow_GatewayToTechnicalDesign" sourceRef="Gateway_ReadyForDevelopment" targetRef="Task_TechnicalDesign" />
+    <bpmn:sequenceFlow id="Flow_ReleaseToInfrastructure" sourceRef="Task_ReleaseCoordination" targetRef="Task_Infrastructure" />
+  </bpmn:process>
+
+  <!-- ПРОЦЕСС 4: РАЗРАБОТКА И КАЧЕСТВО -->
+  <bpmn:process id="DevelopmentQualityProcess" isExecutable="false">
+    <!-- Фаза 2: Архитектурное проектирование -->
+    <bpmn:task id="Task_ArchitecturalDesign" name="Выбор и Проектирование Архитектурных Решений">
+      <bpmn:incoming>Flow_PrioritizationToPlanning</bpmn:incoming>
+      <bpmn:outgoing>Flow_ArchitectureToGateway</bpmn:outgoing>
+    </bpmn:task>
+
+    <!-- Фаза 3: Детальное техническое проектирование -->
+    <bpmn:task id="Task_TechnicalDesign" name="Детальное Техническое Проектирование">
+      <bpmn:incoming>Flow_GatewayToTechnicalDesign</bpmn:incoming>
+      <bpmn:outgoing>Flow_TechnicalDesignToDevelopment</bpmn:outgoing>
+    </bpmn:task>
+
+    <!-- Фаза 3: Разработка функционала -->
+    <bpmn:task id="Task_Development" name="Разработка Функционала">
+      <bpmn:incoming>Flow_TechnicalDesignToDevelopment</bpmn:incoming>
+      <bpmn:outgoing>Flow_DevelopmentToQA</bpmn:outgoing>
+    </bpmn:task>
+
+    <!-- Фаза 4: Системное тестирование -->
+    <bpmn:task id="Task_SystemTesting" name="Проведение Системного и Интеграционного Тестирования">
+      <bpmn:incoming>Flow_DevelopmentToQA</bpmn:incoming>
+      <bpmn:incoming>Flow_BugFixesToQA</bpmn:incoming>
+      <bpmn:outgoing>Flow_TestingToDefectsGateway</bpmn:outgoing>
+    </bpmn:task>
+
+    <!-- Шлюз обнаружения дефектов -->
+    <bpmn:exclusiveGateway id="Gateway_DefectsFound" name="Найдены Дефекты?">
+      <bpmn:incoming>Flow_TestingToDefectsGateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_DefectsToBugFixes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_QAToUAT</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <!-- Исправление дефектов -->
+    <bpmn:task id="Task_BugFixes" name="Исправление Дефектов">
+      <bpmn:incoming>Flow_DefectsToBugFixes</bpmn:incoming>
+      <bpmn:outgoing>Flow_BugFixesToQA</bpmn:outgoing>
+    </bpmn:task>
+
+    <!-- Потоки последовательности -->
+    <bpmn:sequenceFlow id="Flow_ArchitectureToGateway" sourceRef="Task_ArchitecturalDesign" targetRef="Gateway_ReadyForDevelopment" />
+    <bpmn:sequenceFlow id="Flow_TechnicalDesignToDevelopment" sourceRef="Task_TechnicalDesign" targetRef="Task_Development" />
+    <bpmn:sequenceFlow id="Flow_DevelopmentToQA" sourceRef="Task_Development" targetRef="Task_SystemTesting" />
+    <bpmn:sequenceFlow id="Flow_TestingToDefectsGateway" sourceRef="Task_SystemTesting" targetRef="Gateway_DefectsFound" />
+    <bpmn:sequenceFlow id="Flow_DefectsToBugFixes" sourceRef="Gateway_DefectsFound" targetRef="Task_BugFixes" name="Да" />
+    <bpmn:sequenceFlow id="Flow_BugFixesToQA" sourceRef="Task_BugFixes" targetRef="Task_SystemTesting" />
+    <bpmn:sequenceFlow id="Flow_QAToUAT" sourceRef="Gateway_DefectsFound" targetRef="Task_UATCoordination" name="Нет" />
+  </bpmn:process>
+
+  <!-- ПРОЦЕСС 5: ЭКСПЛУАТАЦИЯ И ПОДДЕРЖКА -->
+  <bpmn:process id="OperationsSupportProcess" isExecutable="false">
+    <!-- Фаза 5: Подготовка инфраструктуры -->
+    <bpmn:task id="Task_Infrastructure" name="Подготовка Инфраструктуры и Развертывание">
+      <bpmn:incoming>Flow_ReleaseToInfrastructure</bpmn:incoming>
+      <bpmn:outgoing>Flow_InfrastructureToMonitoring</bpmn:outgoing>
+      <bpmn:outgoing>Flow_DeploymentToMarketing</bpmn:outgoing>
+    </bpmn:task>
+
+    <!-- Фаза 6: Мониторинг -->
+    <bpmn:task id="Task_Monitoring" name="Мониторинг Работы Продукта и Управление Инцидентами">
+      <bpmn:incoming>Flow_InfrastructureToMonitoring</bpmn:incoming>
+      <bpmn:outgoing>Flow_MonitoringToSupport</bpmn:outgoing>
+    </bpmn:task>
+
+    <!-- Фаза 6: Поддержка пользователей -->
+    <bpmn:task id="Task_UserSupport" name="Обработка Запросов Пользователей и Техническая Поддержка">
+      <bpmn:incoming>Flow_MonitoringToSupport</bpmn:incoming>
+      <bpmn:outgoing>Flow_SupportToFeedback</bpmn:outgoing>
+    </bpmn:task>
+
+    <!-- Конечные события -->
+    <bpmn:endEvent id="EndEvent_ProductReleased" name="Продукт Выпущен">
+      <bpmn:incoming>Flow_MarketingToEnd</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:endEvent id="EndEvent_StableOperation" name="Продукт Стабильно Функционирует">
+      <bpmn:incoming>Flow_NoChangesToStable</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <!-- Потоки последовательности -->
+    <bpmn:sequenceFlow id="Flow_InfrastructureToMonitoring" sourceRef="Task_Infrastructure" targetRef="Task_Monitoring" />
+    <bpmn:sequenceFlow id="Flow_MonitoringToSupport" sourceRef="Task_Monitoring" targetRef="Task_UserSupport" />
+    <bpmn:sequenceFlow id="Flow_SupportToFeedback" sourceRef="Task_UserSupport" targetRef="Task_FeedbackAnalysis" />
+    <bpmn:sequenceFlow id="Flow_DeploymentToMarketing" sourceRef="Task_Infrastructure" targetRef="Task_MarketingCampaign" />
+  </bpmn:process>
+
+  <!-- Диаграмма BPMN (информация о позиционировании элементов) -->
+  <bpmndi:BPMNDiagram id="BPMNDiagram_ProductDevelopment">
+    <bpmndi:BPMNPlane id="BPMNPlane_ProductDevelopment" bpmnElement="ProductDevelopmentCollaboration">
+      
+      <!-- Пулы участников с позиционированием -->
+      <bpmndi:BPMNShape id="Shape_BusinessSponsorPool" bpmnElement="BusinessSponsorPool" isHorizontal="true">
+        <dc:Bounds x="100" y="50" width="1400" height="150" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Shape_ProductManagementPool" bpmnElement="ProductManagementPool" isHorizontal="true">
+        <dc:Bounds x="100" y="220" width="1400" height="300" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Shape_ProjectManagementPool" bpmnElement="ProjectManagementPool" isHorizontal="true">
+        <dc:Bounds x="100" y="540" width="1400" height="150" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Shape_DevelopmentQualityPool" bpmnElement="DevelopmentQualityPool" isHorizontal="true">
+        <dc:Bounds x="100" y="710" width="1400" height="300" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Shape_OperationsSupportPool" bpmnElement="OperationsSupportPool" isHorizontal="true">
+        <dc:Bounds x="100" y="1030" width="1400" height="250" />
+      </bpmndi:BPMNShape>
+
+      <!-- Основные элементы процесса -->
+      <bpmndi:BPMNShape id="Shape_StartEvent_BusinessIdea" bpmnElement="StartEvent_BusinessIdea">
+        <dc:Bounds x="150" y="110" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="125" y="150" width="86" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_Task_ConceptDefinition" bpmnElement="Task_ConceptDefinition">
+        <dc:Bounds x="250" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_Gateway_BusinessCaseApproval" bpmnElement="Gateway_BusinessCaseApproval" isMarkerVisible="true">
+        <dc:Bounds x="450" y="265" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="435" y="225" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_EndEvent_ProductReleased" bpmnElement="EndEvent_ProductReleased">
+        <dc:Bounds x="1350" y="110" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1330" y="150" width="76" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</bpmn:definitions>

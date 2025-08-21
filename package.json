@@ -1,0 +1,36 @@
+{
+  "name": "bpmn-process-viewer",
+  "version": "1.0.0",
+  "description": "BPMN Process Viewer - Visualize business process diagrams",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx http-server . -p 3000",
+    "build": "echo 'Build completed'",
+    "start": "npx http-server . -p 3000"
+  },
+  "keywords": [
+    "bpmn",
+    "business-process",
+    "diagram",
+    "visualization",
+    "process-modeling"
+  ],
+  "author": "BPMN Process Team",
+  "license": "MIT",
+  "dependencies": {
+    "bpmn-js": "^17.0.0",
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vasilievyakov/bpmn-process-viewer.git"
+  },
+  "homepage": "https://vasilievyakov.github.io/bpmn-process-viewer/",
+  "devDependencies": {
+    "prettier": "^3.0.0",
+    "eslint": "^8.0.0"
+  }
+}
