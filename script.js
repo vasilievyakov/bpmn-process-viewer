@@ -277,6 +277,16 @@ function extractParticipantAdvanced(text) {
 }
 
 /**
+ * Извлечение условия из текста
+ */
+function extractCondition(text) {
+    if (text.includes('если') || text.includes('Если')) {
+        return text.replace(/^.*?(если|Если)\s*/i, '').replace(/[.,].*$/, '');
+    }
+    return text;
+}
+
+/**
  * Определение типа задачи
  */
 function determineTaskType(taskName) {
@@ -289,16 +299,6 @@ function determineTaskType(taskName) {
     if (lowerName.includes('упаковывается') || lowerName.includes('отправляется')) return 'userTask';
     
     return 'userTask';
-}
-
-/**
- * Извлечение условия из текста
- */
-function extractCondition(text) {
-    if (text.includes('если') || text.includes('Если')) {
-        return text.replace(/^.*?(если|Если)\s*/i, '').replace(/[.,].*$/, '');
-    }
-    return text;
 }
 
 /**
