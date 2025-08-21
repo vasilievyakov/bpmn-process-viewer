@@ -1,19 +1,19 @@
 /**
- * AI BPMN Generator - JavaScript
- * Автоматическое создание BPMN 2.0 диаграмм из текстового описания
+ * AI BPMN Generator Pro - JavaScript
+ * Профессиональное создание BPMN 2.0 диаграмм с использованием BPMN.io
  */
 
 // Глобальные переменные
-let bpmnViewer = null;
+let bpmnModeler = null;
 let currentBPMN = null;
 let fileViewer = null;
 
 // Инициализация приложения
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🤖 AI BPMN Generator инициализирован');
+    console.log('🤖 AI BPMN Generator Pro инициализирован');
     
-    // Инициализация BPMN Viewer для генератора
-    initializeBpmnViewer();
+    // Инициализация BPMN Modeler для генератора
+    initializeBpmnModeler();
     
     // Инициализация BPMN Viewer для файлов
     initializeFileViewer();
@@ -29,25 +29,32 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /**
- * Инициализация BPMN Viewer для генератора
+ * Инициализация BPMN Modeler для генератора
  */
-function initializeBpmnViewer() {
+function initializeBpmnModeler() {
     try {
         const canvas = document.getElementById('bpmn-canvas');
         if (!canvas) {
             throw new Error('Canvas элемент генератора не найден');
         }
 
-        bpmnViewer = new BpmnJS({
+        // Создаем полноценный BPMN Modeler
+        bpmnModeler = new BpmnJS({
             container: canvas,
             width: '100%',
-            height: '100%'
+            height: '100%',
+            additionalModules: [
+                // Включаем все модули для профессиональных диаграмм
+                'bpmn-js-properties-panel',
+                'bpmn-js-properties-panel/lib/provider/camunda',
+                'bpmn-js-properties-panel/lib/provider/bpmn'
+            ]
         });
 
-        console.log('✅ BPMN Viewer для генератора успешно инициализирован');
+        console.log('✅ BPMN Modeler для генератора успешно инициализирован');
         
-        // Обработчики событий BPMN Viewer
-        bpmnViewer.on('import.done', function(event) {
+        // Обработчики событий BPMN Modeler
+        bpmnModeler.on('import.done', function(event) {
             const { error } = event;
             if (error) {
                 console.error('❌ Ошибка импорта BPMN:', error);
@@ -55,13 +62,13 @@ function initializeBpmnViewer() {
             } else {
                 console.log('✅ BPMN диаграмма успешно отображена');
                 setTimeout(() => {
-                    zoomToFit(bpmnViewer);
+                    zoomToFit(bpmnModeler);
                 }, 100);
             }
         });
 
     } catch (error) {
-        console.error('❌ Ошибка инициализации BPMN Viewer:', error);
+        console.error('❌ Ошибка инициализации BPMN Modeler:', error);
     }
 }
 
@@ -100,7 +107,7 @@ function initializeFileViewer() {
 }
 
 /**
- * Генерация BPMN диаграммы из текста
+ * Генерация профессиональной BPMN 2.0 диаграммы из текста
  */
 async function generateBPMN() {
     const description = document.getElementById('process-description').value.trim();
@@ -110,17 +117,17 @@ async function generateBPMN() {
         return;
     }
 
-    console.log('🚀 Начинаю генерацию BPMN из текста:', description);
+    console.log('🚀 Начинаю генерацию профессиональной BPMN 2.0 из текста:', description);
     
     // Показываем статус генерации
-    showGenerationStatus('Анализирую описание процесса...');
+    showGenerationStatus('Анализирую структуру процесса...');
     
     try {
         // Имитация AI анализа (в реальном приложении здесь будет API)
         await simulateAIAnalysis(description);
         
-        // Генерируем BPMN XML
-        const bpmnXML = generateBPMNFromText(description);
+        // Генерируем профессиональную BPMN 2.0 XML
+        const bpmnXML = generateProfessionalBPMNFromText(description);
         
         // Сохраняем результат
         currentBPMN = bpmnXML;
@@ -131,7 +138,7 @@ async function generateBPMN() {
         // Показываем результат
         showGeneratedBPMN();
         
-        console.log('✅ BPMN диаграмма успешно сгенерирована');
+        console.log('✅ Профессиональная BPMN 2.0 диаграмма успешно создана');
         
     } catch (error) {
         console.error('❌ Ошибка генерации BPMN:', error);
@@ -147,8 +154,9 @@ async function simulateAIAnalysis(description) {
         'Анализирую структуру процесса...',
         'Определяю участников и роли...',
         'Выявляю задачи и последовательность...',
-        'Создаю потоки и шлюзы...',
-        'Формирую BPMN 2.0 XML...'
+        'Создаю пулы и дорожки...',
+        'Добавляю шлюзы и потоки...',
+        'Формирую профессиональную BPMN 2.0 XML...'
     ];
     
     for (let i = 0; i < steps.length; i++) {
@@ -158,65 +166,84 @@ async function simulateAIAnalysis(description) {
 }
 
 /**
- * Генерация BPMN XML из текста
+ * Генерация профессиональной BPMN 2.0 XML из текста
  */
-function generateBPMNFromText(description) {
+function generateProfessionalBPMNFromText(description) {
     // Анализируем текст и извлекаем элементы процесса
-    const processElements = analyzeProcessText(description);
+    const processElements = analyzeProcessTextAdvanced(description);
     
-    // Создаем BPMN 2.0 XML
-    const bpmnXML = createBPMNXML(processElements);
+    // Создаем профессиональную BPMN 2.0 XML
+    const bpmnXML = createProfessionalBPMNXML(processElements);
     
     return bpmnXML;
 }
 
 /**
- * Анализ текста процесса
+ * Продвинутый анализ текста процесса
  */
-function analyzeProcessText(text) {
+function analyzeProcessTextAdvanced(text) {
     const lines = text.split('\n').filter(line => line.trim());
     const elements = {
-        participants: [],
+        participants: new Set(),
         tasks: [],
         decisions: [],
-        sequence: []
+        messageFlows: [],
+        pools: [],
+        lanes: []
     };
     
-    // Простой парсинг текста (в реальном приложении здесь будет AI)
+    // Анализируем каждую строку
     lines.forEach((line, index) => {
         const trimmed = line.trim();
+        
         if (trimmed.match(/^\d+\./)) {
             // Нумерованная строка - задача
             const taskName = trimmed.replace(/^\d+\.\s*/, '');
+            const participant = extractParticipantAdvanced(taskName);
+            
             elements.tasks.push({
                 id: `Task_${index + 1}`,
                 name: taskName,
-                participant: extractParticipant(taskName)
+                participant: participant,
+                type: determineTaskType(taskName)
             });
+            
+            if (participant) {
+                elements.participants.add(participant);
+            }
         } else if (trimmed.includes('если') || trimmed.includes('Если')) {
             // Условие - решение
             elements.decisions.push({
                 id: `Decision_${index + 1}`,
                 name: trimmed,
-                condition: extractCondition(trimmed)
+                condition: extractCondition(trimmed),
+                type: 'exclusiveGateway'
+            });
+        } else if (trimmed.includes('параллельно') || trimmed.includes('одновременно')) {
+            // Параллельные процессы
+            elements.decisions.push({
+                id: `Parallel_${index + 1}`,
+                name: trimmed,
+                type: 'parallelGateway'
             });
         }
     });
     
-    // Извлекаем уникальных участников
-    elements.participants = [...new Set(elements.tasks.map(t => t.participant).filter(Boolean))];
+    // Создаем пулы и дорожки
+    elements.pools = createPoolsFromParticipants(Array.from(elements.participants));
     
     return elements;
 }
 
 /**
- * Извлечение участника из текста
+ * Продвинутое извлечение участника
  */
-function extractParticipant(text) {
+function extractParticipantAdvanced(text) {
     const participants = [
         'клиент', 'менеджер', 'разработчик', 'QA', 'тестировщик',
         'архитектор', 'дизайнер', 'аналитик', 'руководитель',
-        'сотрудник', 'специалист', 'команда', 'отдел'
+        'сотрудник', 'специалист', 'команда', 'отдел', 'система',
+        'поставщик', 'подрядчик', 'консультант', 'аудитор'
     ];
     
     for (const participant of participants) {
@@ -229,30 +256,127 @@ function extractParticipant(text) {
 }
 
 /**
- * Извлечение условия из текста
+ * Определение типа задачи
  */
-function extractCondition(text) {
-    if (text.includes('если') || text.includes('Если')) {
-        return text.replace(/^.*?(если|Если)\s*/i, '').replace(/[.,].*$/, '');
-    }
-    return text;
+function determineTaskType(taskName) {
+    const lowerName = taskName.toLowerCase();
+    
+    if (lowerName.includes('провер') || lowerName.includes('анализ')) return 'userTask';
+    if (lowerName.includes('отправ') || lowerName.includes('передач')) return 'sendTask';
+    if (lowerName.includes('получ') || lowerName.includes('прием')) return 'receiveTask';
+    if (lowerName.includes('автомат')) return 'serviceTask';
+    
+    return 'userTask';
 }
 
 /**
- * Создание BPMN 2.0 XML
+ * Создание пулов из участников
  */
-function createBPMNXML(elements) {
+function createPoolsFromParticipants(participants) {
+    if (participants.length === 0) {
+        return [{
+            id: 'Pool_1',
+            name: 'Основной процесс',
+            lanes: []
+        }];
+    }
+    
+    if (participants.length === 1) {
+        return [{
+            id: 'Pool_1',
+            name: participants[0],
+            lanes: []
+        }];
+    }
+    
+    // Создаем пулы для разных групп участников
+    const pools = [];
+    const businessParticipants = participants.filter(p => 
+        ['клиент', 'менеджер', 'руководитель'].includes(p.toLowerCase())
+    );
+    const technicalParticipants = participants.filter(p => 
+        ['разработчик', 'QA', 'архитектор', 'дизайнер'].includes(p.toLowerCase())
+    );
+    const otherParticipants = participants.filter(p => 
+        !businessParticipants.includes(p) && !technicalParticipants.includes(p)
+    );
+    
+    if (businessParticipants.length > 0) {
+        pools.push({
+            id: 'Pool_Business',
+            name: 'Бизнес-процессы',
+            lanes: businessParticipants.map(p => ({ id: `Lane_${p}`, name: p }))
+        });
+    }
+    
+    if (technicalParticipants.length > 0) {
+        pools.push({
+            id: 'Pool_Technical',
+            name: 'Технические процессы',
+            lanes: technicalParticipants.map(p => ({ id: `Lane_${p}`, name: p }))
+        });
+    }
+    
+    if (otherParticipants.length > 0) {
+        pools.push({
+            id: 'Pool_Other',
+            name: 'Дополнительные процессы',
+            lanes: otherParticipants.map(p => ({ id: `Lane_${p}`, name: p }))
+        });
+    }
+    
+    return pools;
+}
+
+/**
+ * Создание профессиональной BPMN 2.0 XML
+ */
+function createProfessionalBPMNXML(elements) {
     const processId = 'Process_' + Date.now();
+    const collaborationId = 'Collaboration_' + Date.now();
     
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" 
                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI" 
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   id="Definitions_1" 
-                  targetNamespace="http://bpmn.io/schema/bpmn">
+                  targetNamespace="http://bpmn.io/schema/bpmn"
+                  exporter="AI BPMN Generator Pro"
+                  exporterVersion="1.0.0">
   
-  <bpmn:process id="${processId}" isExecutable="false">
+  <bpmn:collaboration id="${collaborationId}">`;
+
+    // Добавляем пулы
+    elements.pools.forEach((pool, poolIndex) => {
+        xml += `
+    <bpmn:participant id="${pool.id}" name="${pool.name}" processRef="Process_${poolIndex + 1}">`;
+        
+        // Добавляем дорожки
+        if (pool.lanes.length > 0) {
+            xml += `
+      <bpmn:participant id="${pool.id}_Lanes" name="${pool.name}">`;
+            pool.lanes.forEach(lane => {
+                xml += `
+        <bpmn:participant id="${lane.id}" name="${lane.name}" />`;
+            });
+            xml += `
+      </bpmn:participant>`;
+        }
+        
+        xml += `
+    </bpmn:participant>`;
+    });
+
+    // Добавляем основной процесс
+    xml += `
+  </bpmn:collaboration>
+  
+  <bpmn:process id="${processId}" isExecutable="false">`;
+
+    // Добавляем начальное событие
+    xml += `
     <bpmn:startEvent id="StartEvent_1" name="Начало процесса">
       <bpmn:outgoing>Flow_1</bpmn:outgoing>
     </bpmn:startEvent>`;
@@ -263,31 +387,82 @@ function createBPMNXML(elements) {
         const nextFlowId = `Flow_${index + 2}`;
         
         xml += `
-    <bpmn:task id="${task.id}" name="${task.name}">
+    <bpmn:${task.type} id="${task.id}" name="${task.name}">
       <bpmn:incoming>${flowId}</bpmn:incoming>
       <bpmn:outgoing>${nextFlowId}</bpmn:outgoing>
-    </bpmn:task>
-    
-    <bpmn:sequenceFlow id="${flowId}" sourceRef="${index === 0 ? 'StartEvent_1' : elements.tasks[index - 1].id}" targetRef="${task.id}" />
-    
-    <bpmn:sequenceFlow id="${nextFlowId}" sourceRef="${task.id}" targetRef="${index === elements.tasks.length - 1 ? 'EndEvent_1' : elements.tasks[index + 1].id}" />`;
+    </bpmn:${task.type}>`;
     });
+
+    // Добавляем шлюзы
+    elements.decisions.forEach((decision, index) => {
+        const taskIndex = elements.tasks.length + index;
+        const flowId = `Flow_${taskIndex + 1}`;
+        const nextFlowId = `Flow_${taskIndex + 2}`;
+        
+        xml += `
+    <bpmn:${decision.type} id="${decision.id}" name="${decision.name}">
+      <bpmn:incoming>${flowId}</bpmn:incoming>
+      <bpmn:outgoing>${nextFlowId}</bpmn:outgoing>
+    </bpmn:${decision.type}>`;
+    });
+
+    // Добавляем потоки
+    const totalElements = elements.tasks.length + elements.decisions.length;
+    for (let i = 0; i <= totalElements; i++) {
+        const flowId = `Flow_${i + 1}`;
+        const sourceId = i === 0 ? 'StartEvent_1' : 
+                        (i <= elements.tasks.length ? elements.tasks[i - 1].id : 
+                         elements.decisions[i - elements.tasks.length - 1].id);
+        const targetId = i === totalElements ? 'EndEvent_1' : 
+                        (i < elements.tasks.length ? elements.tasks[i].id : 
+                         elements.decisions[i - elements.tasks.length].id);
+        
+        xml += `
+    <bpmn:sequenceFlow id="${flowId}" sourceRef="${sourceId}" targetRef="${targetId}" />`;
+    }
 
     // Добавляем конечное событие
     xml += `
     
     <bpmn:endEvent id="EndEvent_1" name="Конец процесса">
-      <bpmn:incoming>Flow_${elements.tasks.length + 1}</bpmn:incoming>
+      <bpmn:incoming>Flow_${totalElements + 1}</bpmn:incoming>
     </bpmn:endEvent>
-  </bpmn:process>
+  </bpmn:process>`;
+
+    // Добавляем диаграмму
+    xml += `
   
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="${processId}">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="${collaborationId}">`;
+
+    // Добавляем пулы в диаграмму
+    elements.pools.forEach((pool, poolIndex) => {
+        const poolY = poolIndex * 200;
+        xml += `
+      <bpmndi:BPMNShape id="${pool.id}_di" bpmnElement="${pool.id}">
+        <dc:Bounds x="50" y="${poolY + 50}" width="800" height="150" />
+      </bpmndi:BPMNShape>`;
+        
+        // Добавляем дорожки
+        if (pool.lanes.length > 0) {
+            pool.lanes.forEach((lane, laneIndex) => {
+                const laneX = 50 + laneIndex * 150;
+                xml += `
+        <bpmndi:BPMNShape id="${lane.id}_di" bpmnElement="${lane.id}">
+          <dc:Bounds x="${laneX}" y="${poolY + 50}" width="150" height="150" />
+        </bpmndi:BPMNShape>`;
+            });
+        }
+    });
+
+    // Добавляем элементы процесса
+    xml += `
+      
       <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="102" width="36" height="36" />
       </bpmndi:BPMNShape>`;
 
-    // Добавляем диаграмму для задач
+    // Добавляем задачи в диаграмму
     elements.tasks.forEach((task, index) => {
         const x = 250 + index * 200;
         xml += `
@@ -296,8 +471,17 @@ function createBPMNXML(elements) {
       </bpmndi:BPMNShape>`;
     });
 
-    // Добавляем диаграмму для конечного события
-    const endX = 250 + elements.tasks.length * 200;
+    // Добавляем шлюзы в диаграмму
+    elements.decisions.forEach((decision, index) => {
+        const x = 250 + (elements.tasks.length + index) * 200;
+        xml += `
+      <bpmndi:BPMNShape id="${decision.id}_di" bpmnElement="${decision.id}">
+        <dc:Bounds x="${x}" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>`;
+    });
+
+    // Добавляем конечное событие в диаграмму
+    const endX = 250 + (elements.tasks.length + elements.decisions.length) * 200;
     xml += `
       
       <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
@@ -314,13 +498,13 @@ function createBPMNXML(elements) {
  * Отображение сгенерированной BPMN диаграммы
  */
 async function displayGeneratedBPMN(bpmnXML) {
-    if (!bpmnViewer) {
-        throw new Error('BPMN Viewer не инициализирован');
+    if (!bpmnModeler) {
+        throw new Error('BPMN Modeler не инициализирован');
     }
 
     try {
-        // Импортируем XML в viewer
-        await bpmnViewer.importXML(bpmnXML);
+        // Импортируем XML в modeler
+        await bpmnModeler.importXML(bpmnXML);
         
         // Обновляем XML код в интерфейсе
         document.getElementById('xml-output').textContent = bpmnXML;
@@ -391,15 +575,14 @@ function loadExample(type = 'default') {
 5. QA тестирует продукт и возвращает на доработку при необходимости
 6. Готовый продукт передается клиенту`,
         
-        ecommerce: `1. Клиент выбирает товары на сайте
-2. Добавляет товары в корзину
-3. Оформляет заказ с указанием адреса доставки
-4. Система проверяет наличие товаров на складе
-5. Если товары есть, заказ подтверждается
-6. Если товаров нет, заказ отменяется
-7. Подтвержденный заказ передается в отдел логистики
-8. Товары упаковываются и отправляются клиенту
-9. Клиент получает товары и подтверждает доставку`,
+        product: `1. Бизнес-аналитик получает идею продукта от заказчика
+2. Аналитик проводит анализ требований и создает ТЗ
+3. Архитектор проектирует архитектуру системы
+4. Разработчики создают продукт по спринтам
+5. QA инженер тестирует каждый спринт
+6. Если найдены дефекты, разработчики их исправляют
+7. DevOps инженер разворачивает продукт в продакшн
+8. Менеджер проекта координирует весь процесс`,
         
         medical: `1. Пациент записывается на прием к врачу
 2. Регистратор проверяет документы пациента
@@ -411,16 +594,6 @@ function loadExample(type = 'default') {
 8. Врач назначает лечение
 9. Пациент получает рецепт и рекомендации`,
         
-        manufacturing: `1. Отдел закупок получает заказ на производство
-2. Проверяется наличие сырья на складе
-3. Если сырья недостаточно, размещается заказ поставщикам
-4. Сырье доставляется на склад
-5. Производственный отдел получает задание
-6. Изготавливается продукция
-7. Готовая продукция проходит контроль качества
-8. Если качество не соответствует стандартам, продукция возвращается на доработку
-9. Качественная продукция упаковывается и отправляется на склад готовой продукции`,
-        
         hr: `1. Отдел HR получает заявку на нового сотрудника
 2. HR-специалист составляет описание вакансии
 3. Вакансия публикуется на сайтах поиска работы
@@ -430,7 +603,17 @@ function loadExample(type = 'default') {
 7. Если кандидат подходит, приглашается на личную встречу
 8. Проводится интервью с руководителем отдела
 9. При положительном решении кандидату предлагается работа
-10. Новый сотрудник проходит оформление документов`
+10. Новый сотрудник проходит оформление документов`,
+        
+        ecommerce: `1. Клиент выбирает товары на сайте
+2. Добавляет товары в корзину
+3. Оформляет заказ с указанием адреса доставки
+4. Система проверяет наличие товаров на складе
+5. Если товары есть, заказ подтверждается
+6. Если товаров нет, заказ отменяется
+7. Подтвержденный заказ передается в отдел логистики
+8. Товары упаковываются и отправляются клиенту
+9. Клиент получает товары и подтверждает доставку`
     };
     
     const description = examples[type] || examples.default;
@@ -460,13 +643,13 @@ function downloadBPMN() {
     const link = document.createElement('a');
     
     link.href = url;
-    link.download = `generated-process-${Date.now()}.bpmn`;
+    link.download = `professional-process-${Date.now()}.bpmn`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
     
-    console.log('✅ BPMN файл скачан');
+    console.log('✅ Профессиональный BPMN файл скачан');
 }
 
 /**
@@ -505,6 +688,37 @@ function viewInEditor() {
     const encodedXML = encodeURIComponent(currentBPMN);
     const url = `https://demo.bpmn.io/new?bpmn=${encodedXML}`;
     window.open(url, '_blank');
+}
+
+/**
+ * Скачивание SVG диаграммы
+ */
+async function downloadSVG() {
+    if (!bpmnModeler) {
+        alert('Сначала сгенерируйте BPMN диаграмму');
+        return;
+    }
+
+    try {
+        const result = await bpmnModeler.saveSVG();
+        const { svg } = result;
+        
+        const blob = new Blob([svg], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        
+        link.href = url;
+        link.download = 'professional-bpmn-diagram.svg';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        console.log('✅ SVG диаграмма скачана');
+    } catch (error) {
+        console.error('❌ Ошибка скачивания SVG:', error);
+        alert('Ошибка при скачивании диаграммы');
+    }
 }
 
 /**
@@ -648,34 +862,6 @@ function zoomToFit(viewer) {
 }
 
 /**
- * Скачивание SVG диаграммы
- */
-async function downloadSVG() {
-    if (!fileViewer) return;
-
-    try {
-        const result = await fileViewer.saveSVG();
-        const { svg } = result;
-        
-        const blob = new Blob([svg], { type: 'image/svg+xml' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        
-        link.href = url;
-        link.download = 'bpmn-diagram.svg';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        
-        console.log('✅ SVG диаграмма скачана');
-    } catch (error) {
-        console.error('❌ Ошибка скачивания SVG:', error);
-        alert('Ошибка при скачивании диаграммы');
-    }
-}
-
-/**
  * Настройка навигации
  */
 function setupNavigation() {
@@ -708,8 +894,8 @@ function setupNavigation() {
 function setupEventListeners() {
     // Обработка изменения размера окна
     window.addEventListener('resize', debounce(() => {
-        if (bpmnViewer) {
-            bpmnViewer.get('canvas').resized();
+        if (bpmnModeler) {
+            bpmnModeler.get('canvas').resized();
         }
         if (fileViewer) {
             fileViewer.get('canvas').resized();
@@ -760,8 +946,8 @@ window.clearForm = clearForm;
 window.downloadBPMN = downloadBPMN;
 window.copyXML = copyXML;
 window.viewInEditor = viewInEditor;
+window.downloadSVG = downloadSVG;
 window.loadSampleBPMN = loadSampleBPMN;
 window.zoomIn = zoomIn;
 window.zoomOut = zoomOut;
 window.zoomReset = zoomReset;
-window.downloadSVG = downloadSVG;

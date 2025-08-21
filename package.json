@@ -1,36 +1,47 @@
 {
-  "name": "bpmn-process-viewer",
-  "version": "1.0.0",
-  "description": "BPMN Process Viewer - Visualize business process diagrams",
-  "main": "index.html",
+  "name": "ai-bpmn-generator-pro",
+  "version": "2.0.0",
+  "description": "Профессиональный AI генератор BPMN 2.0 диаграмм с использованием BPMN.io",
+  "main": "index.js",
   "scripts": {
-    "dev": "npx http-server . -p 3000",
-    "build": "echo 'Build completed'",
-    "start": "npx http-server . -p 3000"
-  },
-  "keywords": [
-    "bpmn",
-    "business-process",
-    "diagram",
-    "visualization",
-    "process-modeling"
-  ],
-  "author": "BPMN Process Team",
-  "license": "MIT",
-  "dependencies": {
-    "bpmn-js": "^17.0.0",
-    "http-server": "^14.1.1"
-  },
-  "engines": {
-    "node": ">=16.0.0"
+    "start": "live-server --port=3000",
+    "dev": "live-server --port=3000",
+    "lint": "prettier --check .",
+    "format": "prettier --write .",
+    "build": "echo 'Static site - no build required'",
+    "deploy": "echo 'Deploy to Vercel or GitHub Pages'"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/vasilievyakov/bpmn-process-viewer.git"
   },
   "homepage": "https://vasilievyakov.github.io/bpmn-process-viewer/",
+  "keywords": [
+    "bpmn",
+    "bpmn-2.0",
+    "ai-generator",
+    "process-modeling",
+    "workflow",
+    "business-process",
+    "bpmn.io",
+    "diagram-generator"
+  ],
+  "author": "Yakov Vasiliev",
+  "license": "MIT",
   "devDependencies": {
     "prettier": "^3.0.0",
-    "eslint": "^8.0.0"
-  }
+    "live-server": "^1.2.2"
+  },
+  "dependencies": {
+    "bpmn-js": "^17.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
 }

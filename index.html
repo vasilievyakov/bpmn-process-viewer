@@ -15,8 +15,10 @@
     <!-- Styles -->
     <link rel="stylesheet" href="style.css">
     
-    <!-- BPMN.js CDN -->
-    <script src="https://unpkg.com/bpmn-js@17.0.0/dist/bpmn-viewer.development.js"></script>
+    <!-- BPMN.io - самая мощная библиотека для BPMN 2.0 -->
+    <script src="https://unpkg.com/bpmn-js@17.0.0/dist/bpmn-modeler.development.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/bpmn-js@17.0.0/dist/assets/bpmn-js.css">
+    <link rel="stylesheet" href="https://unpkg.com/bpmn-js@17.0.0/dist/assets/diagram-js.css">
 </head>
 <body>
     <!-- Header -->
@@ -25,7 +27,7 @@
             <div class="header-content">
                 <div class="logo">
                     <span class="logo-icon">🤖</span>
-                    <h1>AI BPMN Generator</h1>
+                    <h1>AI BPMN Generator Pro</h1>
                 </div>
                 <nav class="nav">
                     <a href="#generator" class="nav-link active">Генератор</a>
@@ -43,10 +45,10 @@
         <section class="hero">
             <div class="container">
                 <div class="hero-content">
-                    <h2 class="hero-title">Автоматическое создание BPMN диаграмм</h2>
+                    <h2 class="hero-title">Профессиональный AI BPMN Generator</h2>
                     <p class="hero-description">
-                        Просто опишите ваш бизнес-процесс текстом, и AI автоматически создаст профессиональную BPMN 2.0 диаграмму.
-                        Поддерживает все элементы: пулы, дорожки, задачи, шлюзы, потоки сообщений.
+                        Создавайте сложные BPMN 2.0 диаграммы с пулами, дорожками, шлюзами и потоками сообщений.
+                        Использует самую мощную библиотеку BPMN.io для enterprise-качества.
                     </p>
                 </div>
             </div>
@@ -56,8 +58,8 @@
         <section id="generator" class="generator-section">
             <div class="container">
                 <div class="generator-header">
-                    <h3>🤖 Генератор BPMN диаграмм</h3>
-                    <p>Опишите ваш процесс на русском языке, и AI создаст диаграмму</p>
+                    <h3>🤖 Профессиональный генератор BPMN 2.0</h3>
+                    <p>Опишите ваш процесс на русском языке, и AI создаст полноценную диаграмму с пулами, дорожками и шлюзами</p>
                 </div>
                 
                 <div class="generator-form">
@@ -72,7 +74,7 @@
                     
                     <div class="generator-controls">
                         <button class="btn btn-primary" onclick="generateBPMN()">
-                            🚀 Сгенерировать BPMN
+                            🚀 Сгенерировать BPMN 2.0
                         </button>
                         <button class="btn btn-secondary" onclick="loadExample()">
                             📋 Загрузить пример
@@ -94,11 +96,12 @@
                 <!-- Generated BPMN -->
                 <div id="generated-bpmn" class="generated-bpmn" style="display: none;">
                     <div class="bpmn-header">
-                        <h4>✅ BPMN диаграмма сгенерирована!</h4>
+                        <h4>✅ Профессиональная BPMN 2.0 диаграмма создана!</h4>
                         <div class="bpmn-actions">
                             <button class="btn btn-small" onclick="downloadBPMN()">💾 Скачать BPMN</button>
                             <button class="btn btn-small" onclick="viewInEditor()">👁️ Просмотреть</button>
                             <button class="btn btn-small" onclick="copyXML()">📋 Копировать XML</button>
+                            <button class="btn btn-small" onclick="downloadSVG()">🖼️ Скачать SVG</button>
                         </div>
                     </div>
                     
@@ -150,27 +153,27 @@
         <!-- Examples Section -->
         <section id="examples" class="examples-section">
             <div class="container">
-                <h3>📚 Примеры процессов</h3>
+                <h3>📚 Примеры сложных процессов</h3>
                 <div class="examples-grid">
                     <div class="example-card">
-                        <h4>🛒 Онлайн-магазин</h4>
-                        <p>Процесс обработки заказа от оформления до доставки</p>
-                        <button class="btn btn-small" onclick="loadExample('ecommerce')">Загрузить</button>
+                        <h4>🏭 Разработка продукта</h4>
+                        <p>Полный цикл от идеи до выпуска с пулами участников</p>
+                        <button class="btn btn-small" onclick="loadExample('product')">Загрузить</button>
                     </div>
                     <div class="example-card">
-                        <h4>🏥 Медицинский центр</h4>
-                        <p>Процесс приема пациента от записи до выписки</p>
+                        <h4>🏥 Медицинский процесс</h4>
+                        <p>Сложный процесс с множественными решениями</p>
                         <button class="btn btn-small" onclick="loadExample('medical')">Загрузить</button>
                     </div>
                     <div class="example-card">
-                        <h4>🏭 Производство</h4>
-                        <p>Процесс производства от заказа сырья до отгрузки</p>
-                        <button class="btn btn-small" onclick="loadExample('manufacturing')">Загрузить</button>
+                        <h4>💼 HR найм</h4>
+                        <p>Процесс найма с параллельными потоками</p>
+                        <button class="btn btn-small" onclick="loadExample('hr')">Загрузить</button>
                     </div>
                     <div class="example-card">
-                        <h4>💼 HR процессы</h4>
-                        <p>Процесс найма сотрудника от вакансии до трудоустройства</p>
-                        <button class="btn btn-small" onclick="loadExample('hr')">Загрузить</button>
+                        <h4>🛒 E-commerce</h4>
+                        <p>Обработка заказов с циклами и условиями</p>
+                        <button class="btn btn-small" onclick="loadExample('ecommerce')">Загрузить</button>
                     </div>
                 </div>
             </div>
@@ -182,7 +185,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-left">
-                    <p>&copy; 2024 AI BPMN Generator. Создано с использованием AI и BPMN 2.0</p>
+                    <p>&copy; 2024 AI BPMN Generator Pro. Создано с использованием BPMN.io</p>
                 </div>
                 <div class="footer-right">
                     <a href="https://github.com/vasilievyakov/bpmn-process-viewer" target="_blank">GitHub</a>

@@ -1,4 +1,5 @@
-/* AI BPMN Generator - Стили */
+/* AI BPMN Generator Pro - Стили */
+/* Профессиональный интерфейс для создания сложных BPMN 2.0 диаграмм */
 
 /* CSS Reset и базовые стили */
 * {
@@ -9,25 +10,25 @@
 
 /* Переменные CSS */
 :root {
-    --primary-color: #6366f1;
-    --primary-dark: #4f46e5;
-    --secondary-color: #8b5cf6;
-    --accent-color: #06b6d4;
-    --success-color: #10b981;
-    --warning-color: #f59e0b;
-    --error-color: #ef4444;
+    --primary-color: #2563eb;
+    --primary-dark: #1d4ed8;
+    --secondary-color: #7c3aed;
+    --accent-color: #0891b2;
+    --success-color: #059669;
+    --warning-color: #d97706;
+    --error-color: #dc2626;
     
     --text-primary: #1f2937;
-    --text-secondary: #6b7280;
-    --text-light: #9ca3af;
+    --text-secondary: #4b5563;
+    --text-light: #6b7280;
     
     --bg-primary: #ffffff;
-    --bg-secondary: #f9fafb;
-    --bg-tertiary: #f3f4f6;
-    --bg-dark: #111827;
+    --bg-secondary: #f8fafc;
+    --bg-tertiary: #f1f5f9;
+    --bg-dark: #0f172a;
     
-    --border-color: #e5e7eb;
-    --border-light: #f3f4f6;
+    --border-color: #e2e8f0;
+    --border-light: #f1f5f9;
     
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -44,24 +45,28 @@
 
 /* Темная тема */
 [data-theme="dark"] {
-    --text-primary: #f9fafb;
-    --text-secondary: #d1d5db;
-    --text-light: #9ca3af;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-light: #94a3b8;
     
-    --bg-primary: #111827;
-    --bg-secondary: #1f2937;
-    --bg-tertiary: #374151;
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
     
-    --border-color: #374151;
-    --border-light: #4b5563;
+    --border-color: #334155;
+    --border-light: #475569;
 }
 
-/* Базовые стили */
+/* Глобальные стили */
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
     color: var(--text-primary);
-    background-color: var(--bg-secondary);
+    background-color: var(--bg-primary);
     transition: var(--transition);
 }
 
@@ -72,21 +77,107 @@ body {
     padding: 0 1rem;
 }
 
-/* Header */
-.header {
+/* Типографика */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1.125rem; }
+h6 { font-size: 1rem; }
+
+p {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+}
+
+/* Кнопки */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition);
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: white;
-    padding: 1rem 0;
-    box-shadow: var(--shadow-lg);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--secondary-color));
+}
+
+.btn-secondary {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--primary-color);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-outline:hover {
+    background: var(--bg-secondary);
+    border-color: var(--primary-color);
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+}
+
+/* Header */
+.header {
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
     position: sticky;
     top: 0;
     z-index: 100;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+[data-theme="dark"] .header {
+    background: rgba(15, 23, 42, 0.95);
 }
 
 .header-content {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
 }
 
 .logo {
@@ -97,11 +188,19 @@ body {
 
 .logo-icon {
     font-size: 2rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .logo h1 {
     font-size: 1.5rem;
-    font-weight: 700;
+    margin: 0;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .nav {
@@ -110,35 +209,44 @@ body {
 }
 
 .nav-link {
-    color: white;
+    color: var(--text-secondary);
     text-decoration: none;
     font-weight: 500;
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-md);
     transition: var(--transition);
+    position: relative;
 }
 
 .nav-link:hover,
 .nav-link.active {
-    background-color: rgba(255, 255, 255, 0.1);
-    transform: translateY(-1px);
+    color: var(--primary-color);
 }
 
-/* Main Content */
-.main {
-    min-height: calc(100vh - 140px);
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--primary-color);
+    border-radius: 1px;
 }
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
     padding: 4rem 0;
     text-align: center;
 }
 
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
 .hero-title {
     font-size: 3rem;
-    font-weight: 800;
+    font-weight: 700;
     margin-bottom: 1.5rem;
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     -webkit-background-clip: text;
@@ -149,15 +257,14 @@ body {
 .hero-description {
     font-size: 1.25rem;
     color: var(--text-secondary);
-    max-width: 800px;
+    max-width: 600px;
     margin: 0 auto;
-    line-height: 1.7;
 }
 
 /* Generator Section */
 .generator-section {
     padding: 4rem 0;
-    background-color: var(--bg-primary);
+    background: var(--bg-primary);
 }
 
 .generator-header {
@@ -166,8 +273,7 @@ body {
 }
 
 .generator-header h3 {
-    font-size: 2.5rem;
-    font-weight: 700;
+    font-size: 2rem;
     margin-bottom: 1rem;
     color: var(--text-primary);
 }
@@ -175,6 +281,8 @@ body {
 .generator-header p {
     font-size: 1.125rem;
     color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .generator-form {
@@ -188,13 +296,12 @@ body {
 
 .input-group label {
     display: block;
-    font-weight: 600;
+    font-weight: 500;
     margin-bottom: 0.75rem;
     color: var(--text-primary);
-    font-size: 1.125rem;
 }
 
-.input-group textarea {
+textarea {
     width: 100%;
     padding: 1rem;
     border: 2px solid var(--border-color);
@@ -204,14 +311,14 @@ body {
     line-height: 1.6;
     resize: vertical;
     transition: var(--transition);
-    background-color: var(--bg-primary);
+    background: var(--bg-primary);
     color: var(--text-primary);
 }
 
-.input-group textarea:focus {
+textarea:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .generator-controls {
@@ -221,68 +328,15 @@ body {
     flex-wrap: wrap;
 }
 
-/* Buttons */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    font-size: 1rem;
-    text-decoration: none;
-    cursor: pointer;
-    transition: var(--transition);
-    white-space: nowrap;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: white;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
-
-.btn-secondary {
-    background-color: var(--bg-tertiary);
-    color: var(--text-primary);
-    border: 2px solid var(--border-color);
-}
-
-.btn-secondary:hover {
-    background-color: var(--border-color);
-    transform: translateY(-1px);
-}
-
-.btn-outline {
-    background-color: transparent;
-    color: var(--text-secondary);
-    border: 2px solid var(--border-color);
-}
-
-.btn-outline:hover {
-    background-color: var(--bg-tertiary);
-    color: var(--text-primary);
-}
-
-.btn-small {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-}
-
 /* Generation Status */
 .generation-status {
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: var(--bg-secondary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 600px;
     text-align: center;
-    border: 2px solid var(--border-color);
 }
 
 .status-content {
@@ -295,8 +349,8 @@ body {
 .spinner {
     width: 40px;
     height: 40px;
-    border: 4px solid var(--border-color);
-    border-top: 4px solid var(--primary-color);
+    border: 3px solid var(--border-color);
+    border-top: 3px solid var(--primary-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -308,28 +362,24 @@ body {
 
 /* Generated BPMN */
 .generated-bpmn {
-    max-width: 1000px;
-    margin: 2rem auto;
-    background-color: var(--bg-secondary);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-lg);
+    margin-top: 3rem;
+    animation: fadeIn 0.5s ease-in-out;
 }
 
 .bpmn-header {
-    background: linear-gradient(135deg, var(--success-color), var(--accent-color));
-    color: white;
-    padding: 1.5rem;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
 }
 
 .bpmn-header h4 {
-    font-size: 1.5rem;
-    font-weight: 700;
+    margin: 0;
+    color: var(--success-color);
 }
 
 .bpmn-actions {
@@ -339,47 +389,75 @@ body {
 }
 
 .bpmn-preview {
-    padding: 2rem;
-    background-color: var(--bg-primary);
-    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    margin-bottom: 2rem;
+    min-height: 400px;
 }
 
 .bpmn-canvas {
     width: 100%;
     height: 400px;
-    border: 2px solid var(--border-color);
+    background: white;
     border-radius: var(--radius-md);
-    background-color: white;
     overflow: hidden;
+    position: relative;
 }
 
-.xml-code {
-    padding: 2rem;
-    background-color: var(--bg-tertiary);
+/* BPMN.io стили */
+.bpmn-canvas .djs-container {
+    background: white;
 }
 
-.xml-code h5 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
+.bpmn-canvas .djs-palette {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+}
+
+.bpmn-canvas .djs-palette .entry {
     color: var(--text-primary);
 }
 
-.xml-code pre {
-    background-color: var(--bg-dark);
-    color: #e5e7eb;
+.bpmn-canvas .djs-palette .entry:hover {
+    background: var(--bg-tertiary);
+}
+
+.xml-code {
+    background: var(--bg-dark);
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
+    overflow: hidden;
+}
+
+.xml-code h5 {
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.xml-code pre {
+    background: var(--bg-dark);
+    color: #e2e8f0;
+    padding: 1rem;
     border-radius: var(--radius-md);
     overflow-x: auto;
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
     font-size: 0.875rem;
     line-height: 1.5;
+    border: 1px solid var(--border-color);
+}
+
+.xml-code code {
+    background: none;
+    color: inherit;
 }
 
 /* Viewer Section */
 .viewer-section {
     padding: 4rem 0;
-    background-color: var(--bg-secondary);
+    background: var(--bg-secondary);
 }
 
 .viewer-header {
@@ -388,15 +466,15 @@ body {
 }
 
 .viewer-header h3 {
-    font-size: 2.5rem;
-    font-weight: 700;
+    font-size: 2rem;
     margin-bottom: 1rem;
-    color: var(--text-primary);
 }
 
 .viewer-header p {
     font-size: 1.125rem;
     color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .viewer-controls {
@@ -408,22 +486,19 @@ body {
 }
 
 .file-viewer {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
     max-width: 1000px;
     margin: 0 auto;
-    background-color: var(--bg-primary);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-lg);
 }
 
 .viewer-canvas {
-    padding: 2rem;
-    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1rem;
 }
 
 .viewer-tools {
-    padding: 1.5rem;
-    background-color: var(--bg-secondary);
     display: flex;
     gap: 0.75rem;
     justify-content: center;
@@ -433,15 +508,13 @@ body {
 /* Examples Section */
 .examples-section {
     padding: 4rem 0;
-    background-color: var(--bg-primary);
+    background: var(--bg-primary);
 }
 
 .examples-section h3 {
     text-align: center;
-    font-size: 2.5rem;
-    font-weight: 700;
+    font-size: 2rem;
     margin-bottom: 3rem;
-    color: var(--text-primary);
 }
 
 .examples-grid {
@@ -453,50 +526,48 @@ body {
 }
 
 .example-card {
-    background-color: var(--bg-secondary);
-    padding: 2rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
+    padding: 2rem;
     text-align: center;
-    border: 2px solid var(--border-color);
     transition: var(--transition);
 }
 
 .example-card:hover {
     transform: translateY(-4px);
-    box-shadow: var(--shadow-xl);
+    box-shadow: var(--shadow-lg);
     border-color: var(--primary-color);
 }
 
 .example-card h4 {
-    font-size: 1.5rem;
-    font-weight: 700;
     margin-bottom: 1rem;
     color: var(--text-primary);
 }
 
 .example-card p {
-    color: var(--text-secondary);
     margin-bottom: 1.5rem;
-    line-height: 1.6;
+    color: var(--text-secondary);
 }
 
 /* Footer */
 .footer {
-    background-color: var(--bg-dark);
+    background: var(--bg-dark);
     color: white;
-    padding: 2rem 0;
+    padding: 3rem 0;
     margin-top: 4rem;
 }
 
 .footer-content {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     flex-wrap: wrap;
     gap: 1rem;
 }
 
 .footer-left p {
+    margin: 0;
     color: var(--text-light);
 }
 
@@ -515,49 +586,90 @@ body {
     color: white;
 }
 
+/* Анимации */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Скроллбар */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-light);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
+    .container {
+        padding: 0 0.75rem;
+    }
+    
     .hero-title {
         font-size: 2rem;
     }
     
-    .generator-header h3,
-    .viewer-header h3,
-    .examples-section h3 {
-        font-size: 2rem;
+    .hero-description {
+        font-size: 1.125rem;
     }
     
-    .header-content {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    
-    .nav {
-        gap: 1rem;
-    }
-    
-    .generator-controls,
-    .viewer-controls {
+    .generator-controls {
         flex-direction: column;
         align-items: center;
     }
     
+    .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+    
     .bpmn-header {
         flex-direction: column;
+        gap: 1rem;
         text-align: center;
+    }
+    
+    .bpmn-actions {
+        justify-content: center;
+    }
+    
+    .examples-grid {
+        grid-template-columns: 1fr;
     }
     
     .footer-content {
         flex-direction: column;
         text-align: center;
     }
+    
+    .nav {
+        gap: 1rem;
+    }
+    
+    .logo h1 {
+        font-size: 1.25rem;
+    }
 }
 
 @media (max-width: 480px) {
-    .container {
-        padding: 0 0.5rem;
-    }
-    
     .hero {
         padding: 2rem 0;
     }
@@ -568,45 +680,72 @@ body {
         padding: 2rem 0;
     }
     
-    .btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.875rem;
+    .generator-header h3,
+    .viewer-header h3,
+    .examples-section h3 {
+        font-size: 1.5rem;
+    }
+    
+    .bpmn-canvas {
+        height: 300px;
     }
 }
 
-/* Анимации */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+/* Темная тема переключатель */
+.theme-toggle {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 1000;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow-md);
 }
 
-.generated-bpmn,
-.file-viewer {
-    animation: fadeIn 0.5s ease-out;
+.theme-toggle:hover {
+    transform: scale(1.1);
 }
 
-/* Дополнительные стили для BPMN элементов */
-.bpmn-canvas svg {
-    width: 100%;
-    height: 100%;
+.theme-toggle .icon {
+    font-size: 1.25rem;
+    color: var(--text-primary);
 }
 
-/* Стили для скроллбара */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+/* Улучшения для BPMN.io */
+.bpmn-canvas .djs-overlay-context-pad {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
 }
 
-::-webkit-scrollbar-track {
+.bpmn-canvas .djs-context-pad .entry {
+    color: var(--text-primary);
+}
+
+.bpmn-canvas .djs-context-pad .entry:hover {
     background: var(--bg-tertiary);
-    border-radius: var(--radius-sm);
 }
 
-::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-    border-radius: var(--radius-sm);
+.bpmn-canvas .djs-popup {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: var(--text-light);
+.bpmn-canvas .djs-popup .entry {
+    color: var(--text-primary);
+}
+
+.bpmn-canvas .djs-popup .entry:hover {
+    background: var(--bg-tertiary);
 }
