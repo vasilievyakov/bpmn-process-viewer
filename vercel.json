@@ -49,10 +49,6 @@
   ],
   "github": {
     "enabled": false
-  },
-  "functions": {
-    "index.html": {
-      "includeFiles": "**"
-    }
   }
 }
+
